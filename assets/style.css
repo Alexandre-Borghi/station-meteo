@@ -1,6 +1,11 @@
+@font-face {
+  font-family: SevenSegments;
+  src: url("/assets/7segments.ttf");
+}
+
 * {
     box-sizing: border-box;
-    font-size: 1.2rem;
+    font-size: 1.9rem;
 }
 
 html, body {
@@ -9,7 +14,8 @@ html, body {
 }
 
 body {
-    background-color: #0f1116;
+    background-image: url("/assets/background.jpg");
+    background-size: cover;
     color: #ffffff;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
@@ -23,8 +29,14 @@ body {
 }
 
 #clock {
-    margin-bottom: 5vh;
-    font-size: 15vw;
+    font-size: 22vw;
+    font-family: SevenSegments;
+    letter-spacing: 2.5vw;
+    color: #39ff14;
+}
+
+#clock .seconds {
+    font-size: 11vw;
 }
 
 #weather {
@@ -35,6 +47,19 @@ body {
     text-align: center;
 }
 
-#weather .big {
-    font-size: 10vw;
+#weather .temp {
+    font-size: 15vw;
+    font-family: SevenSegments;
+}
+
+#weather .unit {
+    font-size: 5vw;
+}
+
+#weather #apparent {
+    color: #40A4FF;
+}
+
+#weather #exterior {
+    color: #FF8200;
 }

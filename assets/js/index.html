@@ -8,16 +8,19 @@
 
     <title>Station Météo</title>
     <link rel="stylesheet" href="/assets/style.css" />
+
+    <link rel="apple-touch-icon" sizes="192x192" href="/assets/icons/192.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="/assets/icons/512.png">
 </head>
 <body>
     <div id="main">
         <div id="weather">
-            <div>
-                <div id="exterior" class="big"></div>
+            <div id="exterior">
+                <div class="temp"></div>
                 Extérieur
             </div>
-            <div>
-                <div id="apparent" class="big"></div>
+            <div id="apparent">
+                <div class="temp"></div>
                 Ressenti
             </div>
         </div>
@@ -26,25 +29,25 @@
 
     <script type="module">
         const clock = document.getElementById("clock");
-        setInterval(updateClock, 400);
+        setInterval(updateClock, 20);
         function updateClock() {
             const now = new Date();
             const hh = now.getHours().toString().padStart(2, '0');
             const mm = now.getMinutes().toString().padStart(2, '0');
             const ss = now.getSeconds().toString().padStart(2, '0');
-            clock.innerHTML = `${hh}:${mm}:${ss}`;
+            clock.innerHTML = `${hh}:${mm}<span class="seconds">:${ss}</span>`;
         }
 
         const API_URL = "https://api.open-meteo.com/v1/forecast?latitude=47.703428385725054&longitude=-2.651987137064598&current=temperature_2m,apparent_temperature";
         const weather = document.getElementById("weather");
-        const exterior = weather.querySelector("#exterior");
-        const apparent = weather.querySelector("#apparent");
+        const exterior = weather.querySelector("#exterior .temp");
+        const apparent = weather.querySelector("#apparent .temp");
         setInterval(updateWeather, 3 * 60 * 1000);
         updateWeather();
         async function updateWeather() {
             const d = await (await fetch(API_URL)).json();
-            exterior.innerHTML = `${d.current.temperature_2m}°C`;
-            apparent.innerHTML = `${d.current.apparent_temperature}°C`;
+            exterior.innerHTML = `${d.current.temperature_2m}<span class="unit">°C</span>`;
+            apparent.innerHTML = `${d.current.apparent_temperature}<span class="unit">°C</span>`;
         }
     </script>
 
