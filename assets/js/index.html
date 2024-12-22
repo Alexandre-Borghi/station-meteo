@@ -9,6 +9,7 @@
 </head>
 <body>
     <div id="main">
+        <div id="weather"></div>
         <div id="clock"></div>
     </div>
 
@@ -21,6 +22,15 @@
             const mm = now.getMinutes().toString().padStart(2, '0');
             const ss = now.getSeconds().toString().padStart(2, '0');
             clock.innerHTML = `${hh}:${mm}:${ss}`;
+        }
+
+        const API_URL = "https://api.open-meteo.com/v1/forecast?latitude=47.703428385725054&longitude=-2.651987137064598&current=temperature_2m,apparent_temperature";
+        const weather = document.getElementById("weather");
+        setInterval(updateWeather, 3 * 60 * 1000);
+        updateWeather();
+        async function updateWeather() {
+            const d = await (await fetch(API_URL)).json();
+            weather.innerHTML = `${d.current.temperature_2m}°C`;
         }
     </script>
 

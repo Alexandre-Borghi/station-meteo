@@ -21,7 +21,7 @@ body {
     height: 100%;
 }
 
-#clock {
+#clock, #weather {
     margin-bottom: 5vh;
     font-size: 20vw;
 }
