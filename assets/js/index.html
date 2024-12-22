@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="UTF-8">
+
+    <title>Station Météo</title>
+    <link rel="stylesheet" href="/assets/style.css" />
+</head>
+<body>
+    <div id="main">
+        <div id="clock"></div>
+    </div>
+
+    <script type="module">
+        const clock = document.getElementById("clock");
+        setInterval(updateClock, 400);
+        function updateClock() {
+            const now = new Date();
+            clock.innerHTML = `${now.getHours()}:${now.getMinutes()}`;
+        }
+    </script>
+</body>
+</html>
