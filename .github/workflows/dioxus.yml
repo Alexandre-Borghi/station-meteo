@@ -33,10 +33,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Install cargo-binstall
+        run: curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
       - name: Install Dioxus CLI
-        run: |
-          curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
-          && cargo binstall dioxus-cli --root /.cargo -y --force
+        run: cargo binstall dioxus-cli --root /.cargo -y --force
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup Pages
