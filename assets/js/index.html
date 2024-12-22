@@ -3,13 +3,23 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta charset="UTF-8">
+    <link rel="manifest" href="/assets/manifest.json" />
 
     <title>Station Météo</title>
     <link rel="stylesheet" href="/assets/style.css" />
 </head>
 <body>
     <div id="main">
-        <div id="weather"></div>
+        <div id="weather">
+            <div>
+                <div id="exterior" class="big"></div>
+                Extérieur
+            </div>
+            <div>
+                <div id="apparent" class="big"></div>
+                Ressenti
+            </div>
+        </div>
         <div id="clock"></div>
     </div>
 
@@ -26,11 +36,14 @@
 
         const API_URL = "https://api.open-meteo.com/v1/forecast?latitude=47.703428385725054&longitude=-2.651987137064598&current=temperature_2m,apparent_temperature";
         const weather = document.getElementById("weather");
+        const exterior = weather.querySelector("#exterior");
+        const apparent = weather.querySelector("#apparent");
         setInterval(updateWeather, 3 * 60 * 1000);
         updateWeather();
         async function updateWeather() {
             const d = await (await fetch(API_URL)).json();
-            weather.innerHTML = `${d.current.temperature_2m}°C`;
+            exterior.innerHTML = `${d.current.temperature_2m}°C`;
+            apparent.innerHTML = `${d.current.apparent_temperature}°C`;
         }
     </script>
 
