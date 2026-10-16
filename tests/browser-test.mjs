@@ -85,7 +85,12 @@ async function main() {
     const locName = await page.$eval("#location-name", (el) => el.textContent);
     assert(locName.length > 1 && locName !== "—", `location name shown (got "${locName}")`);
 
-    // ── Test 5: Settings panel opens/closes ───────────────────────────────
+    // ── Test 5: Date is shown ─────────────────────────────────────────────
+    console.log("\n── Test: date ──");
+    const dateText = await page.$eval("#date", (el) => el.textContent);
+    assert(dateText.length > 3 && dateText !== "—", `date shown (got "${dateText}")`);
+
+    // ── Test 6: Settings panel opens/closes ───────────────────────────────
     console.log("\n── Test: settings panel ──");
     await page.click("#settings-btn");
     await page.waitForSelector("#settings-overlay:not([hidden])", { timeout: 5000 });
@@ -97,6 +102,24 @@ async function main() {
       return rect.width > 0 && rect.height > 0;
     });
     assert(searchInputVisible, "search input is visible");
+
+    // ── Test 7: Location search ───────────────────────────────────────────
+    console.log("\n── Test: location search ──");
+    await page.type("#search-input", "Quimper", { delay: 30 });
+    // Wait for debounced search + API response
+    await page.waitForSelector("#search-results:not([hidden]) .search-result", { timeout: 15000 });
+    const resultCount = await page.$$eval(".search-result", (els) => els.length);
+    assert(resultCount > 0, `search returns results (${resultCount} found)`);
+    const firstResult = await page.$eval(".search-result .result-name", (el) => el.textContent);
+    console.log(`  first result: "${firstResult}"`);
+
+    // Click first result
+    await page.click(".search-result");
+    await new Promise((r) => setTimeout(r, 300));
+    const saveEnabled = await page.$eval("#save-btn", (el) => !el.disabled);
+    assert(saveEnabled, "save button enabled after selecting result");
+    const selectedLabel = await page.$eval("#selected-label", (el) => el.textContent);
+    assert(selectedLabel.includes("Quimper"), `selected location shows Quimper (got "${selectedLabel}")`);
 
     // Close with Escape
     await page.keyboard.press("Escape");
@@ -114,10 +137,12 @@ async function main() {
       console.log(`  📸 ${vp.name} (${vp.width}×${vp.height}) → screenshots/${vp.name}.png`);
     }
 
-    // Settings panel screenshot
+    // Settings panel screenshot (with search results)
     await page.setViewport({ width: 1280, height: 800 });
     await page.click("#settings-btn");
-    await new Promise((r) => setTimeout(r, 2000)); // wait for map to load
+    await page.type("#search-input", "Lyon", { delay: 20 });
+    await page.waitForSelector("#search-results:not([hidden]) .search-result", { timeout: 15000 });
+    await new Promise((r) => setTimeout(r, 2500)); // wait for map + results
     await page.screenshot({ path: `${SCREENSHOT_DIR}settings.png`, fullPage: false });
     console.log(`  📸 settings panel → screenshots/settings.png`);
     await page.keyboard.press("Escape");

@@ -55,6 +55,13 @@ function updateClock() {
   const ss = String(now.getSeconds()).padStart(2, "0");
   $("clock-hm").textContent = `${hh}:${mm}`;
   $("clock-ss").textContent = `:${ss}`;
+
+  const dateStr = now.toLocaleDateString("fr-FR", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  });
+  $("date").textContent = dateStr;
 }
 
 // ─── Weather ─────────────────────────────────────────────────────────────────
@@ -294,20 +301,25 @@ async function initMap() {
   $("map-container").hidden = false;
   await ensureLeaflet();
 
-  // Leaflet needs a tick to size itself
-  requestAnimationFrame(() => {
-    if (state.map) {
-      state.map.invalidateSize();
-      return;
-    }
-    const { lat, lon } = state.selected || state.location;
-    state.map = L.map("map", { zoomControl: true, attributionControl: true }).setView([lat, lon], 10);
-    L.tileLayer(OSM_TILES, {
-      maxZoom: 19,
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    }).addTo(state.map);
-    placeMarker(lat, lon);
-  });
+  // Leaflet needs the container to be visible AND laid out before init.
+  // Double rAF + invalidateSize ensures correct dimensions.
+  await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+
+  if (state.map) {
+    state.map.invalidateSize();
+    return;
+  }
+
+  const { lat, lon } = state.selected || state.location;
+  state.map = L.map("map", { zoomControl: true, attributionControl: true }).setView([lat, lon], 10);
+  L.tileLayer(OSM_TILES, {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  }).addTo(state.map);
+  placeMarker(lat, lon);
+
+  // Extra invalidateSize after tiles start loading
+  setTimeout(() => state.map && state.map.invalidateSize(), 300);
 }
 
 function placeMarker(lat, lon) {
@@ -322,8 +334,14 @@ function openSettings() {
   $("settings-overlay").hidden = false;
   document.body.classList.add("settings-open");
   $("search-input").focus();
-  // Show current location on map
-  if (!state.map) initMap();
+  if (!state.map) {
+    initMap();
+  } else {
+    // Map already exists — just fix sizing after the overlay becomes visible
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      if (state.map) state.map.invalidateSize();
+    }));
+  }
 }
 
 function closeSettings() {
