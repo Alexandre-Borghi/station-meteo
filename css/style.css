@@ -1,65 +1,516 @@
+/* ─── Station Météo — Styles ─────────────────────────────────────────────── */
+/* Designed for readability from across a room: large text, high contrast.   */
+
 @font-face {
-  font-family: SevenSegments;
-  src: url("/assets/7segments.ttf");
+  font-family: "SevenSegments";
+  src: url("/assets/fonts/7segments.ttf");
+  font-display: swap;
 }
 
-* {
-    box-sizing: border-box;
-    font-size: 1.9rem;
+/* ─── Design tokens ──────────────────────────────────────────────────────── */
+
+:root {
+  --bg:          #0a0e1a;
+  --bg-card:     rgba(255, 255, 255, 0.06);
+  --text:        #f0f4ff;
+  --text-dim:    rgba(240, 244, 255, 0.55);
+  --clock-color: #39ff14;
+  --temp-hot:    #ff8c1a;
+  --temp-cold:   #40a4ff;
+  --accent:      #4da3ff;
+  --danger:      #ff5c5c;
+  --radius:      1.2rem;
+  --font-display: "SevenSegments", "Courier New", monospace;
+  --font-body:   -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+}
+
+/* ─── Reset & base ───────────────────────────────────────────────────────── */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 html, body {
-    height: 100%;
-    margin: 0;
+  height: 100%;
+  overflow: hidden;
 }
 
 body {
-    background-image: url("/assets/background.jpg");
-    background-size: cover;
-    color: #ffffff;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: var(--bg);
+  background-image:
+    radial-gradient(ellipse at 20% 10%, rgba(77, 163, 255, 0.08) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 90%, rgba(255, 140, 26, 0.06) 0%, transparent 60%);
+  color: var(--text);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+  cursor: default;
 }
+
+/* ─── Main layout ────────────────────────────────────────────────────────── */
 
 #main {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 2vh 4vw;
+  gap: 1.5vh;
 }
+
+/* ─── Top bar ────────────────────────────────────────────────────────────── */
+
+#topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 90vw;
+}
+
+#condition {
+  display: flex;
+  align-items: center;
+  gap: 1.2vw;
+  font-size: clamp(1.4rem, 3.5vw, 3rem);
+  font-weight: 600;
+  color: var(--text-dim);
+}
+
+#condition-icon {
+  display: inline-flex;
+  width: 1.6em;
+  height: 1.6em;
+  color: var(--accent);
+}
+
+#condition-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+#settings-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(3rem, 7vw, 6rem);
+  height: clamp(3rem, 7vw, 6rem);
+  font-size: clamp(1.6rem, 3.5vw, 3rem);
+  color: var(--text-dim);
+  background: var(--bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s, transform 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#settings-btn:hover,
+#settings-btn:focus-visible {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.12);
+  transform: rotate(30deg);
+  outline: none;
+}
+
+/* ─── Clock ──────────────────────────────────────────────────────────────── */
 
 #clock {
-    font-size: 22vw;
-    font-family: SevenSegments;
-    letter-spacing: 2.5vw;
-    color: #39ff14;
+  font-family: var(--font-display);
+  font-size: clamp(6rem, 22vw, 24rem);
+  line-height: 1;
+  letter-spacing: 0.08em;
+  color: var(--clock-color);
+  text-shadow: 0 0 2vw rgba(57, 255, 20, 0.25);
+  white-space: nowrap;
 }
 
-#clock .seconds {
-    font-size: 11vw;
+#clock-ss {
+  font-size: 0.5em;
+  opacity: 0.7;
 }
+
+/* ─── Weather cards ──────────────────────────────────────────────────────── */
 
 #weather {
-    display: flex;
+  display: flex;
+  gap: 4vw;
+  justify-content: center;
+}
+
+.weather-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5vh;
+  padding: 2vh 4vw;
+  background: var(--bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius);
+  backdrop-filter: blur(8px);
+  min-width: 22vw;
+}
+
+.weather-card .temp {
+  font-family: var(--font-display);
+  font-size: clamp(4rem, 14vw, 14rem);
+  line-height: 1;
+  letter-spacing: 0.05em;
+}
+
+.weather-card .temp .unit {
+  font-size: 0.35em;
+  vertical-align: super;
+  opacity: 0.7;
+  letter-spacing: 0;
+}
+
+.weather-card .label {
+  font-size: clamp(1.2rem, 3vw, 2.5rem);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--text-dim);
+}
+
+#exterior .temp { color: var(--temp-hot); }
+#apparent .temp { color: var(--temp-cold); }
+
+/* ─── Location name ──────────────────────────────────────────────────────── */
+
+#location-name {
+  font-size: clamp(1.2rem, 3.5vw, 3rem);
+  font-weight: 500;
+  color: var(--text-dim);
+  letter-spacing: 0.05em;
+}
+
+/* ─── Settings overlay ───────────────────────────────────────────────────── */
+
+#settings-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  padding: 4vh 4vw;
+}
+
+#settings-overlay[hidden] {
+  display: none;
+}
+
+#settings-panel {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 55rem;
+  max-height: 90vh;
+  background: #121829;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 2rem 6rem rgba(0, 0, 0, 0.5);
+  user-select: text;
+}
+
+/* Settings header */
+
+#settings-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.2rem 1.6rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+#settings-header h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+#settings-close {
+  font-size: 2rem;
+  line-height: 1;
+  color: var(--text-dim);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.2rem 0.6rem;
+  border-radius: 0.4rem;
+  transition: color 0.15s, background 0.15s;
+}
+
+#settings-close:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Settings body */
+
+#settings-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.2rem 1.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+#search-row {
+  display: flex;
+  gap: 0.6rem;
+}
+
+#search-input {
+  flex: 1;
+  font-size: 1.1rem;
+  font-family: var(--font-body);
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 0.6rem;
+  padding: 0.7rem 1rem;
+  outline: none;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+#search-input:focus {
+  border-color: var(--accent);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+#search-input::placeholder {
+  color: var(--text-dim);
+}
+
+#search-btn,
+#geoloc-btn,
+#save-btn {
+  font-size: 1rem;
+  font-family: var(--font-body);
+  font-weight: 600;
+  color: var(--text);
+  background: var(--accent);
+  border: none;
+  border-radius: 0.6rem;
+  padding: 0.7rem 1.2rem;
+  cursor: pointer;
+  transition: filter 0.15s, opacity 0.15s;
+  -webkit-tap-highlight-color: transparent;
+  white-space: nowrap;
+}
+
+#search-btn:hover,
+#geoloc-btn:hover,
+#save-btn:hover:not(:disabled) {
+  filter: brightness(1.15);
+}
+
+#search-btn:active,
+#geoloc-btn:active,
+#save-btn:active:not(:disabled) {
+  filter: brightness(0.9);
+}
+
+#save-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+#geoloc-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  align-self: flex-start;
+}
+
+#geoloc-btn svg {
+  width: 1.2em;
+  height: 1.2em;
+}
+
+#geoloc-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+  filter: none;
+}
+
+/* Search results */
+
+#search-results {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  max-height: 16rem;
+  overflow-y: auto;
+}
+
+#search-results[hidden] {
+  display: none;
+}
+
+.search-result {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.7rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.search-result:hover {
+  background: rgba(77, 163, 255, 0.12);
+  border-color: rgba(77, 163, 255, 0.3);
+}
+
+.search-result.selected {
+  background: rgba(77, 163, 255, 0.18);
+  border-color: var(--accent);
+}
+
+.result-name {
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.result-detail {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+}
+
+/* Map */
+
+#map-container {
+  border-radius: 0.6rem;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#map-container[hidden] {
+  display: none;
+}
+
+#map {
+  width: 100%;
+  height: 22rem;
+  background: #0d1320;
+  z-index: 0;
+}
+
+/* Leaflet dark theme overrides */
+.leaflet-container {
+  background: #0d1320;
+  font-family: var(--font-body);
+}
+
+.leaflet-control-zoom a {
+  background: #1a2235;
+  color: var(--text);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.leaflet-control-zoom a:hover {
+  background: #253050;
+}
+
+.leaflet-control-attribution {
+  background: rgba(10, 14, 26, 0.8);
+  color: var(--text-dim);
+}
+
+.leaflet-control-attribution a {
+  color: var(--accent);
+}
+
+/* Selected location */
+
+#selected-location {
+  padding: 0.7rem 1rem;
+  background: rgba(57, 255, 20, 0.08);
+  border: 1px solid rgba(57, 255, 20, 0.25);
+  border-radius: 0.5rem;
+  font-size: 1rem;
+}
+
+#selected-label {
+  color: var(--text);
+  font-weight: 500;
+}
+
+/* Settings footer */
+
+#settings-footer {
+  padding: 1rem 1.6rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  justify-content: flex-end;
+}
+
+#save-btn {
+  font-size: 1.1rem;
+  padding: 0.8rem 2rem;
+}
+
+/* ─── Screen-lock video (hidden) ─────────────────────────────────────────── */
+
+#fake-video {
+  position: fixed;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+  top: 0;
+  left: 0;
+}
+
+/* ─── Reduced motion ─────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}
+
+/* ─── Small screens / portrait ───────────────────────────────────────────── */
+
+@media (max-width: 600px) {
+  #weather {
+    flex-direction: column;
+    gap: 2vh;
+    width: 100%;
+  }
+
+  .weather-card {
+    flex-direction: row;
     justify-content: space-between;
-    width: 80%;
-    margin-bottom: 10vh;
-    text-align: center;
-}
+    width: 100%;
+    min-width: unset;
+    padding: 1.5vh 4vw;
+  }
 
-#weather .temp {
-    font-size: 15vw;
-    font-family: SevenSegments;
-}
+  .weather-card .temp {
+    font-size: clamp(3rem, 14vw, 6rem);
+  }
 
-#weather .unit {
-    font-size: 5vw;
-}
+  #map {
+    height: 16rem;
+  }
 
-#weather #apparent {
-    color: #40A4FF;
-}
-
-#weather #exterior {
-    color: #FF8200;
+  #settings-panel {
+    max-height: 94vh;
+  }
 }

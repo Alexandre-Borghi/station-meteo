@@ -1,0 +1,15 @@
+{
+  "name": "station-meteo",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Weather station PWA — vanilla HTML/CSS/JS, no build step",
+  "type": "module",
+  "scripts": {
+    "serve": "python3 -m http.server 8000",
+    "test": "node tests/browser-test.mjs",
+    "shot": "node tests/screenshot.mjs"
+  },
+  "devDependencies": {
+    "puppeteer-core": "^23.0.0"
+  }
+}

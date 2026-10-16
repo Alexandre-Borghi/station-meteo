@@ -1,18 +1,32 @@
 {
   "name": "Station Météo",
+  "short_name": "Météo",
+  "description": "Horloge et météo en temps réel pour la maison",
+  "start_url": "/",
+  "scope": "/",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#0a0e1a",
+  "theme_color": "#0a0e1a",
+  "lang": "fr",
   "icons": [
-    {
-      "src": "/assets/icons/512.png",
-      "type": "image/png",
-      "sizes": "512x512"
-    },
     {
       "src": "/assets/icons/192.png",
       "type": "image/png",
-      "sizes": "192x192"
+      "sizes": "192x192",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/icons/512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/icons/512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
     }
-  ],
-  "start_url": "/assets/js/index.html",
-  "display": "fullscreen"
+  ]
 }
-
