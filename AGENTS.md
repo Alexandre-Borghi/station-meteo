@@ -23,17 +23,18 @@ living-room table. Shows a large clock and current outdoor weather (temperature
 ```
 ├── index.html          # Main app entry point
 ├── manifest.json       # PWA manifest
+├── sw.js               # Service worker (caches app shell, never caches API)
 ├── flake.nix           # Nix devshell — all tools come from here
+├── flake.lock          # Locked nixpkgs revision (commit this)
 ├── css/
 │   └── style.css       # All styles
 ├── js/
 │   └── app.js          # All application logic
 ├── assets/
 │   ├── icons/          # PWA icons (192, 512, favicon, apple-touch)
-│   ├── icons-src/      # SVG source for icons (edit these, run `icons` to regenerate)
-│   ├── fonts/
-│   │   └── 7segments.ttf
-│   └── background.jpg
+│   ├── icons-src/      # SVG source for icons (edit these, regenerate PNGs)
+│   └── fonts/
+│       └── 7segments.ttf
 ├── tests/
 │   └── browser-test.mjs  # Puppeteer-core browser test + screenshot script
 ├── package.json        # Dev-only: puppeteer-core for tests
