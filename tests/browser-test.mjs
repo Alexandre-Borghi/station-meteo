@@ -147,6 +147,36 @@ async function main() {
     console.log(`  📸 settings panel → screenshots/settings.png`);
     await page.keyboard.press("Escape");
 
+    // ── Test 8: Clock follows the selected city's timezone ────────────────
+    console.log("\n── Test: clock timezone ──");
+    await page.evaluate(() => {
+      localStorage.setItem("station-meteo-location", JSON.stringify({
+        name: "New York",
+        lat: 40.7128,
+        lon: -74.006,
+        timezone: "America/New_York",
+      }));
+    });
+    await page.reload({ waitUntil: "networkidle2" });
+    const clockNY = await page.$eval("#clock-hm", (el) => el.textContent);
+    const dateNY = await page.$eval("#date", (el) => el.textContent);
+    const tzFmt = new Intl.DateTimeFormat("fr-FR", {
+      timeZone: "America/New_York",
+      weekday: "long", day: "numeric", month: "long",
+      hour: "2-digit", minute: "2-digit", hour12: false,
+    });
+    const tzParts = {};
+    for (const p of tzFmt.formatToParts(new Date())) tzParts[p.type] = p.value;
+    const expHh = tzParts.hour === "24" ? "00" : tzParts.hour;
+    const expDate = `${tzParts.weekday} ${tzParts.day} ${tzParts.month}`;
+    assert(dateNY === expDate, `date follows city timezone (got "${dateNY}", expected "${expDate}")`);
+    const [gotHh, gotMm] = clockNY.split(":").map(Number);
+    const expMm = Number(tzParts.minute);
+    // The clock ticks every 250ms; allow the display to be one minute behind.
+    const clockOk = gotHh === Number(expHh) && (gotMm === expMm || gotMm === (expMm + 59) % 60);
+    assert(clockOk, `clock shows New York time (got "${clockNY}", expected ~${expHh}:${tzParts.minute})`);
+    await page.evaluate(() => localStorage.removeItem("station-meteo-location"));
+
   } finally {
     await browser.close();
   }

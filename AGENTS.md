@@ -153,6 +153,8 @@ branch.
 ## Features
 
 1. **Clock** — large 7-segment display, HH:MM:SS, updates every second.
+   Follows the timezone of the selected location (IANA zone from
+   Open-Meteo, stored in `localStorage` with the location).
 2. **Weather** — current outdoor temperature + apparent temperature from
    Open-Meteo, refreshed every 3 minutes.
 3. **Location picker** — search any city/address via Open-Meteo Geocoding API.

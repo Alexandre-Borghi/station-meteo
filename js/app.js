@@ -48,20 +48,48 @@ function saveLocation(loc) {
 
 // ─── Clock ───────────────────────────────────────────────────────────────────
 
+const clockFormatters = new Map();
+
+function clockFormatter() {
+  const tz = state.location.timezone;
+  if (!clockFormatters.has(tz)) {
+    let fmt;
+    try {
+      fmt = new Intl.DateTimeFormat("fr-FR", {
+        timeZone: tz,
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+      });
+    } catch (_) {
+      // Unknown or unsupported timezone: fall back to the device timezone.
+      fmt = new Intl.DateTimeFormat("fr-FR", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+      });
+    }
+    clockFormatters.set(tz, fmt);
+  }
+  return clockFormatters.get(tz);
+}
+
 function updateClock() {
   const now = new Date();
-  const hh = String(now.getHours()).padStart(2, "0");
-  const mm = String(now.getMinutes()).padStart(2, "0");
-  const ss = String(now.getSeconds()).padStart(2, "0");
-  $("clock-hm").textContent = `${hh}:${mm}`;
-  $("clock-ss").textContent = `:${ss}`;
-
-  const dateStr = now.toLocaleDateString("fr-FR", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-  });
-  $("date").textContent = dateStr;
+  const parts = {};
+  for (const part of clockFormatter().formatToParts(now)) parts[part.type] = part.value;
+  const hh = parts.hour === "24" ? "00" : parts.hour;
+  $("clock-hm").textContent = `${hh}:${parts.minute}`;
+  $("clock-ss").textContent = `:${parts.second}`;
+  $("date").textContent = `${parts.weekday} ${parts.day} ${parts.month}`;
 }
 
 // ─── Weather ─────────────────────────────────────────────────────────────────
@@ -96,6 +124,7 @@ async function refreshWeather() {
   try {
     const data = await fetchWeather();
     renderWeather(data);
+    setLocationTimezone(data.timezone);
   } catch (err) {
     console.error("Weather fetch failed:", err);
     $("temp-exterior").textContent = "—";
@@ -146,6 +175,20 @@ function svgIcon(inner) {
 
 function renderLocation() {
   $("location-name").textContent = state.location.name || "—";
+}
+
+// Adopt the city's IANA timezone (from the weather or geocoding API) so the
+// clock follows the selected location. Invalid names are rejected by the
+// formatter constructor and ignored.
+function setLocationTimezone(tz) {
+  if (!tz || tz === state.location.timezone) return;
+  try {
+    new Intl.DateTimeFormat("fr-FR", { timeZone: tz });
+  } catch (_) {
+    return;
+  }
+  state.location.timezone = tz;
+  saveLocation(state.location);
 }
 
 // ─── Geocoding search ────────────────────────────────────────────────────────
@@ -206,6 +249,7 @@ function selectPlace(place) {
     name: place.name + (place.admin1 ? `, ${place.admin1}` : "") + (place.country ? ` (${place.country})` : ""),
     lat: place.latitude,
     lon: place.longitude,
+    timezone: place.timezone,
   };
 
   $("selected-label").textContent = state.selected.name;
