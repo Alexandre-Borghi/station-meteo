@@ -54,7 +54,7 @@ The devshell provides:
 
 | Tool | Purpose |
 |------|---------|
-| `python3` | Dev server (`python3 -m http.server 8000`) |
+| `python3` | Dev server (`python3 -m http.server 8080`) |
 | `chromium` | Headless browser for screenshots & tests |
 | `nodejs_22` | Running puppeteer-core test scripts |
 | `imagemagick` + `librsvg` | Generating PWA PNG icons from SVG |
@@ -64,14 +64,14 @@ The devshell provides:
 
 ```sh
 # Start dev server
-python3 -m http.server 8000
-# → open http://localhost:8000
+python3 -m http.server 8080
+# → open http://localhost:8080
 
 # Take a screenshot (headless chromium)
 chromium --headless=new --no-sandbox \
   --screenshot=screenshots/desktop.png \
   --window-size=1920,1080 \
-  http://localhost:8000
+  http://localhost:8080
 
 # Run browser tests (puppeteer-core + nix chromium)
 node tests/browser-test.mjs

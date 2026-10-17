@@ -36,7 +36,7 @@
             echo "  Tools on PATH: python3, chromium, node, magick, curl, jq."
             echo ""
             echo "  Helper commands are flake apps — run them with nix run:"
-            echo "    nix run .#serve          — dev server (python http.server on :8000)"
+            echo "    nix run .#serve          — dev server (python http.server on :8080)"
             echo "    nix run .#shot -- <name> — headless screenshot into screenshots/ (starts a temp server)"
             echo "    nix run .#test           — puppeteer-core browser tests"
             echo "    nix run .#icons          — regenerate PWA icons from SVG source"
@@ -51,7 +51,7 @@
           serve = {
             type = "app";
             program = "${pkgs.writeShellScriptBin "serve" ''
-              exec ${pkgs.python3}/bin/python3 -m http.server 8000
+              exec ${pkgs.python3}/bin/python3 -m http.server 8080
             ''}/bin/serve";
           };
 
@@ -61,14 +61,14 @@
               set -eu
               name="''${1:-desktop}"
               mkdir -p screenshots
-              ${pkgs.python3}/bin/python3 -m http.server 8000 >/dev/null 2>&1 &
+              ${pkgs.python3}/bin/python3 -m http.server 8080 >/dev/null 2>&1 &
               server_pid=$!
               trap 'kill $server_pid 2>/dev/null' EXIT
               sleep 1
               ${pkgs.chromium}/bin/chromium --headless=new --no-sandbox \
                 --screenshot="screenshots/$name.png" \
                 --window-size=1920,1080 \
-                http://localhost:8000
+                http://localhost:8080
             ''}/bin/shot";
           };
 
@@ -81,7 +81,11 @@
                 exit 1
               fi
               export CHROMIUM_BIN="${pkgs.chromium}/bin/chromium"
-              exec ${pkgs.nodejs_22}/bin/node tests/browser-test.mjs "$@"
+              ${pkgs.python3}/bin/python3 -m http.server 8080 >/dev/null 2>&1 &
+              server_pid=$!
+              trap 'kill $server_pid 2>/dev/null' EXIT
+              sleep 1
+              ${pkgs.nodejs_22}/bin/node tests/browser-test.mjs "$@"
             ''}/bin/test";
           };
 

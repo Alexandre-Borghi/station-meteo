@@ -35,8 +35,8 @@ nix develop
 Inside the shell:
 
 ```sh
-# Start dev server → http://localhost:8000
-python3 -m http.server 8000
+# Start dev server → http://localhost:8080
+python3 -m http.server 8080
 
 # Run browser tests + screenshots
 npm install        # one-time: installs puppeteer-core
@@ -46,7 +46,7 @@ node tests/browser-test.mjs
 chromium --headless=new --no-sandbox \
   --screenshot=screenshots/manual.png \
   --window-size=1280,800 \
-  http://localhost:8000
+  http://localhost:8080
 ```
 
 ## Project structure

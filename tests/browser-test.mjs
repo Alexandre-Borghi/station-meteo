@@ -6,7 +6,7 @@ import puppeteer from "puppeteer-core";
 import { mkdir } from "node:fs/promises";
 
 const CHROMIUM = process.env.CHROMIUM_BIN || "/run/current-system/sw/bin/chromium";
-const BASE_URL = process.env.BASE_URL || "http://localhost:8000";
+const BASE_URL = process.env.BASE_URL || "http://localhost:8080";
 const SCREENSHOT_DIR = new URL("../screenshots/", import.meta.url).pathname;
 
 const VIEWPORTS = [
