@@ -154,7 +154,9 @@ let searchAbort = null;
 
 async function searchPlaces(query) {
   if (searchAbort) searchAbort.abort();
-  searchAbort = new AbortController();
+  // AbortController is unavailable on very old WebKit (Safari 12.0) —
+  // degrade to non-aborting requests there.
+  searchAbort = "AbortController" in window ? new AbortController() : null;
 
   const params = new URLSearchParams({
     name: query,
@@ -164,7 +166,7 @@ async function searchPlaces(query) {
   });
 
   try {
-    const res = await fetch(`${API_GEOCODE}?${params}`, { signal: searchAbort.signal });
+    const res = await fetch(`${API_GEOCODE}?${params}`, searchAbort ? { signal: searchAbort.signal } : undefined);
     if (!res.ok) throw new Error(`Geocode API: ${res.status}`);
     const data = await res.json();
     return data.results || [];
