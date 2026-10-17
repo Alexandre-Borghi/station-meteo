@@ -127,15 +127,15 @@ function weatherCodeToInfo(code) {
 // Inline SVG weather icons (stroke-based, currentColor)
 const WEATHER_ICONS = {
   sun: svgIcon(`<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>`),
-  sunCloud: svgIcon(`<path d="M12 2v2M4.93 4.93l1.41 1.41M2 12h2M6.34 17.66l-1.41 1.41"/><circle cx="8" cy="8" r="3"/><path d="M17 19a4 4 0 0 0 0-8 5 5 0 0 0-9.6 1.5A3.5 3.5 0 0 0 8 19h9z"/>`),
-  cloudSun: svgIcon(`<circle cx="17" cy="7" r="3"/><path d="M17 2v1M21.07 4.93l-.71.71M22 7h-1M19.07 9.07l-.71-.71"/><path d="M3 18a4 4 0 0 1 .5-7.97A5 5 0 0 1 13 8.5 3.5 3.5 0 0 1 13.5 18H3z"/>`),
+  sunCloud: svgIcon(`<path d="M12 2v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="M2 12h2"/><path d="m19.07 4.93-1.41 1.41"/><path d="M8.05 12.65a4 4 0 0 1 5.93-4.13"/><path d="M11 22h6a5 5 0 1 0-4.9-6H11a3 3 0 1 0 0 6z"/>`),
+  cloudSun: svgIcon(`<path d="M12 2v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="M20 12h2"/><path d="m19.07 4.93-1.41 1.41"/><path d="M15.95 12.65a4 4 0 0 0-5.93-4.13"/><path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 1 1 0 6z"/>`),
   cloud: svgIcon(`<path d="M17.5 19a4.5 4.5 0 0 0 .38-8.98 6 6 0 0 0-11.4 1.6A4 4 0 0 0 7 19h10.5z"/>`),
-  fog: svgIcon(`<path d="M17.5 19a4.5 4.5 0 0 0 .38-8.98 6 6 0 0 0-11.4 1.6A4 4 0 0 0 7 19h10.5z"/><path d="M3 22h18M6 16h12" opacity="0.5"/>`),
+  fog: svgIcon(`<path d="M17.5 14a4.5 4.5 0 0 0 .38-8.98 6 6 0 0 0-11.4 1.6A4 4 0 0 0 7 14h10.5z"/><path d="M3 17.5h18M5 20h14M7 22.5h10"/>`),
   drizzle: svgIcon(`<path d="M17.5 16a4.5 4.5 0 0 0 .38-8.98 6 6 0 0 0-11.4 1.6A4 4 0 0 0 7 16h10.5z"/><path d="M8 19v2M12 20v2M16 19v2"/>`),
   rain: svgIcon(`<path d="M17.5 16a4.5 4.5 0 0 0 .38-8.98 6 6 0 0 0-11.4 1.6A4 4 0 0 0 7 16h10.5z"/><path d="M8 19l-1 3M12 19l-1 3M16 19l-1 3"/>`),
   showers: svgIcon(`<path d="M17.5 16a4.5 4.5 0 0 0 .38-8.98 6 6 0 0 0-11.4 1.6A4 4 0 0 0 7 16h10.5z"/><path d="M7 19l-1 3M11 19l-1 3M15 19l-1 3M19 19l-1 3"/>`),
-  snow: svgIcon(`<path d="M17.5 16a4.5 4.5 0 0 0 .38-8.98 6 6 0 0 0-11.4 1.6A4 4 0 0 0 7 16h10.5z"/><path d="M8 19v3M8 20.5l-1.5-1M8 20.5l1.5-1M12 19v3M12 20.5l-1.5-1M12 20.5l1.5-1M16 19v3M16 20.5l-1.5-1M16 20.5l1.5-1"/>`),
-  storm: svgIcon(`<path d="M17.5 16a4.5 4.5 0 0 0 .38-8.98 6 6 0 0 0-11.4 1.6A4 4 0 0 0 7 16h4z"/><path d="M13 16l-3 5h3l-2 4"/>`),
+  snow: svgIcon(`<path d="M7 5.1v3.8M5.35 6.05l3.3 1.9M8.65 6.05l-3.3 1.9M16 10.1v3.8M14.35 11.05l3.3 1.9M17.65 11.05l-3.3 1.9M10.5 16.1v3.8M8.85 17.05l3.3 1.9M12.15 17.05l-3.3 1.9"/>`),
+  storm: svgIcon(`<path d="M17.5 16a4.5 4.5 0 0 0 .38-8.98 6 6 0 0 0-11.4 1.6A4 4 0 0 0 7 16"/><path d="m13 11.5-3 5h4l-3 5"/>`),
 };
 
 function svgIcon(inner) {
